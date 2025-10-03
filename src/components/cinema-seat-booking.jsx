@@ -29,7 +29,19 @@ const CinemaSeatBooking = ({
 
       for (let seat = 0; seat < layout.seatsPerRow; seat++) {
         const seatId = `${String.fromCharCode(65 + row)}${seat + 1}`;
+
+        seatRow.push({
+            id: seatId,
+            row,
+            seat,
+            type: seatTypeInfo?.type || "Regular",
+            price: seatTypeInfo?.price || 150,
+            color: seatTypeInfo?.color || "Blue",
+            status: bookedSeats.includes(seatId) ? "booked" : "available",
+            selected : false,
+        });
       }
+      seats.push(seatRow);
     }
   }, [layout, seatTypes, bookedSeats]);
 
