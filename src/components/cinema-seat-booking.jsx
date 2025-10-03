@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo, useState } from "react";
 
 const CinemaSeatBooking = ({
   layout = {
@@ -17,6 +17,24 @@ const CinemaSeatBooking = ({
   title = "Cinema Hall Booking",
   subtitle = "Select Your Preferred Seats",
 }) => {
+  const getSeatType = () => {
+    // TODO: Implement seat type based om row
+  };
+
+  const initializeSeats = useMemo(() => {
+    const seats = [];
+    for (let row = 0; row < layout.rows; row++) {
+      const seatRow = [];
+      const seatType = getSeatType(row);
+
+      for (let seat = 0; seat < layout.seatsPerRow; seat++) {
+        const seatId = `${String.fromCharCode(65 + row)}${seat + 1}`;
+      }
+    }
+  }, [layout, seatTypes, bookedSeats]);
+
+  const [seats, setSeats] = useState(initializeSeats);
+
   return (
     <div className="w-full min-h-screen bg-gray-50 p-4">
       {/* title */}
@@ -35,8 +53,9 @@ const CinemaSeatBooking = ({
         </div>
 
         {/* seat map */}
-        <div className="mb-6 overflow-x-auto"></div>
-
+        <div className="mb-6 overflow-x-auto">
+          <div className="flex flex-col items-center min-w-max">{}</div>
+        </div>
 
         {/* legend */}
         {/* summary */}
