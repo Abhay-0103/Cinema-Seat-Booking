@@ -25,27 +25,48 @@ const CinemaSeatBooking = ({
     const seats = [];
     for (let row = 0; row < layout.rows; row++) {
       const seatRow = [];
-      const seatType = getSeatType(row);
+      const seatTypeInfo = getSeatType(row);
 
       for (let seat = 0; seat < layout.seatsPerRow; seat++) {
         const seatId = `${String.fromCharCode(65 + row)}${seat + 1}`;
 
         seatRow.push({
-            id: seatId,
-            row,
-            seat,
-            type: seatTypeInfo?.type || "Regular",
-            price: seatTypeInfo?.price || 150,
-            color: seatTypeInfo?.color || "Blue",
-            status: bookedSeats.includes(seatId) ? "booked" : "available",
-            selected : false,
+          id: seatId,
+          row,
+          seat,
+          type: seatTypeInfo?.type || "Regular",
+          price: seatTypeInfo?.price || 150,
+          color: seatTypeInfo?.color || "Blue",
+          status: bookedSeats.includes(seatId) ? "booked" : "available",
+          selected: false,
         });
       }
       seats.push(seatRow);
     }
+    return seats;
   }, [layout, seatTypes, bookedSeats]);
 
   const [seats, setSeats] = useState(initializeSeats);
+
+  const getSeatClassName = (seat) => {
+    return "w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 m-1 rounded-t-lg border-2 cursor-pointer transition-all duration-200 flex items-center justify-center text-xs sm:text-sm font-bold bg-blue-100 border-blue-300 text-blue-800";
+
+    // more condtions
+  };
+
+  const renderSeatSection = (seatRow, startIndex, endIndex) => {
+    return (
+      <div className="flex">
+        {seatRow.slice(startIndex, endIndex).map((seat, index) => {
+          return (
+            <div className={getSeatClassName(seat)}>
+              {startIndex + index + 1}
+            </div>
+          );
+        })}
+      </div>
+    );
+  };
 
   return (
     <div className="w-full min-h-screen bg-gray-50 p-4">
@@ -66,7 +87,24 @@ const CinemaSeatBooking = ({
 
         {/* seat map */}
         <div className="mb-6 overflow-x-auto">
-          <div className="flex flex-col items-center min-w-max">{}</div>
+          <div className="flex flex-col items-center min-w-max">
+            {seats.map((row, rowIndex) => {
+              return (
+                <div key={rowIndex} className="flex items-center mb-2">
+                  <span className="w-8 text-center font-bold text-gray-600 mr-4">
+                    {String.fromCharCode(65 + rowIndex)}
+                  </span>
+                  {renderSeatSection(row, 0, layout.aislePosition)}
+                  {/* ailse */}
+                  {renderSeatSection(
+                    row,
+                    layout.aislePosition,
+                    layout.seatsPerRow
+                  )}
+                </div>
+              );
+            })}
+          </div>
         </div>
 
         {/* legend */}
