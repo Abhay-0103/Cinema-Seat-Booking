@@ -4,7 +4,7 @@ const CinemaSeatBooking = ({
   layout = {
     rows: 8,
     seatsPerRow: 12,
-    aislePosition: 8,
+    aislePosition: 5,
   },
   seatTypes = {
     regular: { name: "Regular", price: 150, rows: [0, 1, 2] },
@@ -18,7 +18,10 @@ const CinemaSeatBooking = ({
   subtitle = "Select Your Preferred Seats",
 }) => {
   const getSeatType = () => {
-    // TODO: Implement seat type based om row
+    // Implement seat type based om row
+const seatTypeEntries = Object.entries(seatTypes);
+
+for (let i = 0; i < seatTypeEntries.length; i++) {}
   };
 
   const initializeSeats = useMemo(() => {
@@ -47,6 +50,7 @@ const CinemaSeatBooking = ({
   }, [layout, seatTypes, bookedSeats]);
 
   const [seats, setSeats] = useState(initializeSeats);
+  const [selectedSeats, setSelectedSeats] = useState([]);
 
   const getSeatClassName = (seat) => {
     return "w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 m-1 rounded-t-lg border-2 cursor-pointer transition-all duration-200 flex items-center justify-center text-xs sm:text-sm font-bold bg-blue-100 border-blue-300 text-blue-800";
@@ -54,12 +58,22 @@ const CinemaSeatBooking = ({
     // more condtions
   };
 
+
+  const handleSeatClick = (rowIndex, seatIndex) => {
+    // TODO: Implememnt seat click logic
+  }
+
   const renderSeatSection = (seatRow, startIndex, endIndex) => {
     return (
       <div className="flex">
         {seatRow.slice(startIndex, endIndex).map((seat, index) => {
           return (
-            <div className={getSeatClassName(seat)}>
+            <div className={getSeatClassName(seat)} key = {seat.id} 
+            title={`${seat.id} - ${
+                getSeatType(seat.row)?.name || "Regular"
+            } - ${currency}${seat.price}`}
+            onClick={() => handleSeatClick(seat.row, startIndex + index)}
+            >
               {startIndex + index + 1}
             </div>
           );
@@ -96,11 +110,8 @@ const CinemaSeatBooking = ({
                   </span>
                   {renderSeatSection(row, 0, layout.aislePosition)}
                   {/* ailse */}
-                  {renderSeatSection(
-                    row,
-                    layout.aislePosition,
-                    layout.seatsPerRow
-                  )}
+                  <div className="w-8"></div>
+                  {renderSeatSection(row, layout.aislePosition, layout.seatsPerRow)}
                 </div>
               );
             })}
