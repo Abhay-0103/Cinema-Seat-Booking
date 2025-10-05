@@ -1,3 +1,4 @@
+import { config } from "process";
 import React, { useMemo, useState } from "react";
 
 const CinemaSeatBooking = ({
@@ -17,11 +18,31 @@ const CinemaSeatBooking = ({
   title = "Cinema Hall Booking",
   subtitle = "Select Your Preferred Seats",
 }) => {
+
+    const colors = [
+      "blue",
+      "purple",
+      "yellow",
+      "green",
+      "red",
+      "indigo",
+      "pink",
+      "gray",
+    ];
+
+
   const getSeatType = () => {
     // Implement seat type based om row
-const seatTypeEntries = Object.entries(seatTypes);
+    const seatTypeEntries = Object.entries(seatTypes);
 
-for (let i = 0; i < seatTypeEntries.length; i++) {}
+    for (let i = 0; i < seatTypeEntries.length; i++) {
+      const [type, info] = seatTypeEntries[i];
+
+      if(config.rows.includes(row)) {
+        const color = colors[i % colors.length];
+        return { type, color, ...config}
+      }
+    }
   };
 
   const initializeSeats = useMemo(() => {
@@ -58,21 +79,22 @@ for (let i = 0; i < seatTypeEntries.length; i++) {}
     // more condtions
   };
 
-
   const handleSeatClick = (rowIndex, seatIndex) => {
     // TODO: Implememnt seat click logic
-  }
+  };
 
   const renderSeatSection = (seatRow, startIndex, endIndex) => {
     return (
       <div className="flex">
         {seatRow.slice(startIndex, endIndex).map((seat, index) => {
           return (
-            <div className={getSeatClassName(seat)} key = {seat.id} 
-            title={`${seat.id} - ${
+            <div
+              className={getSeatClassName(seat)}
+              key={seat.id}
+              title={`${seat.id} - ${
                 getSeatType(seat.row)?.name || "Regular"
-            } - ${currency}${seat.price}`}
-            onClick={() => handleSeatClick(seat.row, startIndex + index)}
+              } - ${currency}${seat.price}`}
+              onClick={() => handleSeatClick(seat.row, startIndex + index)}
             >
               {startIndex + index + 1}
             </div>
@@ -111,7 +133,11 @@ for (let i = 0; i < seatTypeEntries.length; i++) {}
                   {renderSeatSection(row, 0, layout.aislePosition)}
                   {/* ailse */}
                   <div className="w-8"></div>
-                  {renderSeatSection(row, layout.aislePosition, layout.seatsPerRow)}
+                  {renderSeatSection(
+                    row,
+                    layout.aislePosition,
+                    layout.seatsPerRow
+                  )}
                 </div>
               );
             })}
