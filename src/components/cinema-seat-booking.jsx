@@ -1,5 +1,16 @@
-import { config } from "process";
-import React, { useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
+
+// Stable color palette for seat types
+const SEAT_TYPE_COLORS = [
+  "blue",
+  "purple",
+  "yellow",
+  "green",
+  "red",
+  "indigo",
+  "pink",
+  "gray",
+];
 
 const CinemaSeatBooking = ({
   layout = {
@@ -14,39 +25,27 @@ const CinemaSeatBooking = ({
   },
   bookedSeats = [],
   currency = "$",
-  onBookingComplete = () => {},
   title = "Cinema Hall Booking",
   subtitle = "Select Your Preferred Seats",
 }) => {
-
-    const colors = [
-      "blue",
-      "purple",
-      "yellow",
-      "green",
-      "red",
-      "indigo",
-      "pink",
-      "gray",
-    ];
+ 
 
 
-  const getSeatType = () => {
-    // Implement seat type based om row
+  const getSeatType = useCallback((row) => {
+    // Determine seat type based on the row index
     const seatTypeEntries = Object.entries(seatTypes);
 
     for (let i = 0; i < seatTypeEntries.length; i++) {
       const [type, info] = seatTypeEntries[i];
-
-      if(config.rows.includes(row)) {
-        const color = colors[i % colors.length];
-        return { type, color, ...config}
+      if (info?.rows?.includes(row)) {
+        const color = SEAT_TYPE_COLORS[i % SEAT_TYPE_COLORS.length];
+        return { type, color, ...info };
       }
     }
 
     const [firstType, firstConfig] = seatTypeEntries[0];
-    return { type: firstType, color: colors[0], ...firstConfig };
-  };
+    return { type: firstType, color: SEAT_TYPE_COLORS[0], ...firstConfig };
+  }, [seatTypes]);
 
   const initializeSeats = useMemo(() => {
     const seats = [];
@@ -71,10 +70,24 @@ const CinemaSeatBooking = ({
       seats.push(seatRow);
     }
     return seats;
-  }, [layout, seatTypes, bookedSeats]);
+  }, [layout, bookedSeats, getSeatType]);
 
   const [seats, setSeats] = useState(initializeSeats);
-  const [selectedSeats, setSelectedSeats] = useState([]);
+  // We can infer selected seats from the seats matrix; no need to store separately
+
+  const getColorClass = (colorName) => {
+    const colorMap = {
+      blue: "bg-blue-100 border-blue-300 text-blue-800 hover:bg-blue-200",
+      purple: "bg-purple-100 border-purple-300 text-purple-800 hover:bg-purple-200",
+      yellow: "bg-yellow-100 border-yellow-300 text-yellow-800 hover:bg-yellow-200",
+      green: "bg-green-100 border-green-300 text-green-800 hover:bg-green-200", 
+      red: "bg-red-100 border-red-300 text-red-800 hover:bg-red-200",
+      indigo: "bg-indigo-100 border-indigo-300 text-indigo-800 hover:bg-indigo-200",
+      pink: "bg-pink-100 border-pink-300 text-pink-800 hover:bg-pink-200",
+      gray: "bg-gray-100 border-gray-300 text-gray-800 hover:bg-gray-200",  
+    };
+    return colorMap[colorName] || colorMap.blue
+  };
 
   const getSeatClassName = (seat) => {
     const baseClass =
@@ -89,12 +102,19 @@ const CinemaSeatBooking = ({
       return `${baseClass} bg-green-500 border-green-600 text-white transform scale-110`;
     }
 
-    return `${baseClass}` ${getColorClass(seat.color)}`;
+    return `${baseClass} ${getColorClass(seat.color)}`;
     // more condtions
   };
 
   const handleSeatClick = (rowIndex, seatIndex) => {
-    // TODO: Implememnt seat click logic
+    setSeats((prev) => {
+      const next = prev.map((r) => r.slice());
+      const seat = next[rowIndex][seatIndex];
+      if (seat.status === "booked") return prev; // ignore booked seats
+      seat.selected = !seat.selected;
+      return next;
+    });
+
   };
 
   const renderSeatSection = (seatRow, startIndex, endIndex) => {
@@ -159,6 +179,9 @@ const CinemaSeatBooking = ({
         </div>
 
         {/* legend */}
+        <div className="flex flex-wrap justify-center gap-6 mb-6 p-4 bg-gray-50 rounded-lg">
+          
+        </div>
         {/* summary */}
         {/* book button */}
       </div>
