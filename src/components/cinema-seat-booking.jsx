@@ -77,8 +77,19 @@ const CinemaSeatBooking = ({
   const [selectedSeats, setSelectedSeats] = useState([]);
 
   const getSeatClassName = (seat) => {
-    return "w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 m-1 rounded-t-lg border-2 cursor-pointer transition-all duration-200 flex items-center justify-center text-xs sm:text-sm font-bold bg-blue-100 border-blue-300 text-blue-800";
+    const baseClass =
+     "w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 m-1 rounded-t-lg border-2 cursor-pointer transition-all duration-200 flex items-center justify-center text-xs sm:text-sm font-bold bg-blue-100 border-blue-300 text-blue-800";
 
+
+    if (seat.status === "booked") {
+      return `${baseClass} bg-gray-400 border-gray-500 text-gray-600 cursor-not-allowed`;
+    }
+
+    if (seat.selected) {
+      return `${baseClass} bg-green-500 border-green-600 text-white transform scale-110`;
+    }
+
+    return `${baseClass}` ${getColorClass(seat.color)}`;
     // more condtions
   };
 
