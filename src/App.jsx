@@ -15,7 +15,15 @@ function App() {
         premium: { name: "Premium", price: 250, rows: [3, 4, 5] },
         vip: { name: "VIP", price: 350, rows: [6, 7] },
       }}
-      bookedSeats={["C4, C5"]}
+     
+      onBookingComplete={(summary) => {
+        // Demo: log booking summary
+        console.log("Booking complete:", summary);
+        alert(
+          `Booked ${summary.seats.length} seat(s): ${summary.seats.join(", ")}\n` +
+          `Total: ${summary.currency}${summary.total}`
+        );
+      }}
     />
   );
 }
