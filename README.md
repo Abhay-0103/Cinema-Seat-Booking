@@ -63,10 +63,28 @@ npm run preview
 
 ## Project Structure
 
+```
+Cinema-Seat-Booking/
+├─ public/
+│  └─ vite.svg
+├─ src/
+│  ├─ components/
+│  │  └─ cinema-seat-booking.jsx     # Seat map component
+│  ├─ App.css
+│  ├─ App.jsx                        # Demo usage of the component
+│  ├─ index.css                      # Tailwind CSS entry
+│  └─ main.jsx                       # React bootstrap
+├─ index.html                        # App HTML shell
+├─ package.json                      # Scripts and deps
+├─ eslint.config.js                  # ESLint config
+├─ vite.config.js                    # Vite + Tailwind plugin config
+└─ README.md
+```
+
 - `src/components/cinema-seat-booking.jsx` — main seat booking component
 - `src/App.jsx` — sample usage of the component
 - `src/main.jsx` and `index.html` — app bootstrap
-- `src/index.css` — Tailwind CSS
+- `src/index.css` — Tailwind CSS entry
 
 ## Using the Component
 
