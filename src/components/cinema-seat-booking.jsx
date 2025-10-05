@@ -43,6 +43,9 @@ const CinemaSeatBooking = ({
         return { type, color, ...config}
       }
     }
+
+    const [firstType, firstConfig] = seatTypeEntries[0];
+    return { type: firstType, color: colors[0], ...firstConfig };
   };
 
   const initializeSeats = useMemo(() => {
