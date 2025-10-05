@@ -129,7 +129,7 @@ const CinemaSeatBooking = ({
       const next = prev.map((r) => r.slice());
       const target = next[rowIndex][seatIndex];
       if (target.status === "booked") return prev; // ignore booked seats
-      target.selected = !target.selected;
+      next[rowIndex][seatIndex] = { ...target, selected: !target.selected };
       return next;
     });
   };
