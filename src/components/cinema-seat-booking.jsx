@@ -107,6 +107,22 @@ const CinemaSeatBooking = ({
   };
 
   const handleSeatClick = (rowIndex, seatIndex) => {
+    const seat = seats[rowIndex][seatIndex];
+
+    const isCurrentlyBooked = seat.status === "booked";
+
+    setSeats((prev) => {
+      const next = prev.map((r) => r.slice());
+      const seat = next[rowIndex][seatIndex];
+      if (seat.status === "booked") return prev; // ignore booked seats
+      seat.selected = !seat.selected;
+      return next;
+    });
+    if (isCurrentlyBooked) return; // ignore booked seats
+    seat.selected = !seat.selected;
+    return next;
+  };
+
     setSeats((prev) => {
       const next = prev.map((r) => r.slice());
       const seat = next[rowIndex][seatIndex];
@@ -137,6 +153,15 @@ const CinemaSeatBooking = ({
       </div>
     );
   };
+
+const uniqueSeatType = Object.entries(seatTypes).map(
+  ([type, config], index)=> {
+  return {
+    type,
+    color: SEAT_TYPE_COLORS[index % SEAT_TYPE_COLORS.length],
+    ...config,
+  };
+});
 
   return (
     <div className="w-full min-h-screen bg-gray-50 p-4">
@@ -180,7 +205,14 @@ const CinemaSeatBooking = ({
 
         {/* legend */}
         <div className="flex flex-wrap justify-center gap-6 mb-6 p-4 bg-gray-50 rounded-lg">
-          
+            {uniqueSeatType.map((seatType) => (
+              <div key={seatType.type} className="flex items-center space-x-2">
+                <div  className={`w-6 h-6 rounded border-2 ${getColorClass(seatType.color)}`}></div>
+                <span className="text-gray-700 font-medium">
+                  {seatType.name} ({currency}{seatType.price})      
+                </span>
+              </div>
+            ))}
         </div>
         {/* summary */}
         {/* book button */}
